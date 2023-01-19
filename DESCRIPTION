@@ -1,9 +1,9 @@
 Package: LIRA
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Lung cancer Immunotherapy Response Artificial intelligence model
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
+Author: Dongqiang Zeng, Yiran Fang
+Maintainer: The package maintainer <dongqiangzeng@gmail.com>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: What license is it under?
