@@ -14,6 +14,8 @@ lira_model(
 )
 }
 \arguments{
+\item{eset}{processed gene expression data is reconmend}
+
 \item{check_eset}{}
 }
 \description{

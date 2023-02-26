@@ -9,13 +9,14 @@ predict_rf_model_cox(
   eset_new,
   pdata_new = NULL,
   feas = NULL,
+  feas_genes = NULL,
   prefix = c("-", "\\\\:"),
   id_pdata_new = "ID",
   na_replace = 1
 )
 }
 \arguments{
-\item{na_replace}{}
+\item{feas_genes}{}
 }
 \description{
 Title
