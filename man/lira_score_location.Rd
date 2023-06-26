@@ -6,23 +6,28 @@
 \usage{
 lira_score_location(
   score,
+  pat_id = "ID",
+  col_score = "riskscore",
   ref_score = ref_lira_score,
   palette = "nrc",
   cols = NULL,
   palette_line = "jama",
   showplot = TRUE,
   path = NULL,
-  panel = "OS"
+  panel = "OS",
+  bins_width = 33
 )
 }
 \arguments{
 \item{score}{score}
 
-\item{ref_score}{}
+\item{pat_id}{patient identifier}
+
+\item{ref_score}{reference score of plot}
 
 \item{palette}{palette of response}
 
-\item{cols}{}
+\item{cols}{manual colors for objective response}
 
 \item{palette_line}{palette of line}
 
@@ -30,7 +35,7 @@ lira_score_location(
 
 \item{path}{path to save result}
 
-\item{panel}{}
+\item{panel}{option = `OS`, `PFS`}
 }
 \description{
 Location of lira_score of each patient

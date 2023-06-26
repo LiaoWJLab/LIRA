@@ -19,12 +19,6 @@ lira_model2(
 }
 \arguments{
 \item{org}{'hsa' or 'mus'}
-
-\item{ref}{}
-
-\item{loop}{}
-
-\item{return_all}{}
 }
 \description{
 Title
