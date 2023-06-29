@@ -10,15 +10,14 @@ lira_heatmap(
   id_pdata = "ID",
   BOR = "BOR",
   palette_heatmap = 6,
-  path = NULL
+  path = NULL,
+  anonymous = TRUE,
+  remove_batch = TRUE,
+  method = "tpm"
 )
 }
 \arguments{
-\item{BOR}{}
-
-\item{palette_heatmap}{}
-
-\item{path}{}
+\item{remove_batch}{}
 }
 \description{
 Title

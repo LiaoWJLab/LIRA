@@ -14,11 +14,15 @@ lira_model2(
   ref = TRUE,
   loop = TRUE,
   check_eset = TRUE,
-  return_all = FALSE
+  return_all = FALSE,
+  remove_batch = FALSE,
+  method = "tpm"
 )
 }
 \arguments{
 \item{org}{'hsa' or 'mus'}
+
+\item{method}{}
 }
 \description{
 Title
