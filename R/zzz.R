@@ -25,10 +25,10 @@
 
   citation <-paste0(" If you use ", pkgname, " in published research, please cite:\n",
                     " DQ Zeng, YR Fang, …, WJ Liao*.\n",
-                    " LIRA: Predicting NSCLC immunotherapy resistance based on Random Forest Model \n ",
-                    " Journal of Thoracic Oncology. 12:687975,(2023). \n",
+                    " LIRA: Predicting NSCLC immunotherapy resistance based on Random Forest Model, Under Review \n ",
+                    # " Journal of Thoracic Oncology. 12:687975,(2023). \n",
                     # " XXXX, 2020", "\n",
-                    " DOI: 10.3389/JTO.2023.687975\n",
+                    # " DOI: 10.3389/JTO.2023.687975\n",
                     # " PMID:  ","\n",
                     "==========================================================================")
 
