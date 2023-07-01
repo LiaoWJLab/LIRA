@@ -15,27 +15,24 @@ knitr::opts_chunk$set(
 
 # LIRA
 
-<!-- badges: start -->
-<!-- badges: end -->
 LIRA is an R package to predict the effectiveness of immunotherapy in patients with NSCLC.
 
 ## 1.Introduction
   1.LIRA was designed to predict the reponse to immunotherapy in patients with NSCLC.
   2.This package consists a random survival model based on expression profiles of 50 genes, which were selected through univariate Cox regression and subgroup analysis.
-  3.This package providers functions for different scenarios and allows visual assessment to determine whether patients are suitable for immunotherapy.
+  3.This package provides functions for different scenarios and allows visual assessment to determine whether patients are suitable for immunotherapy.
 
 ## 2.Installation
 It is essential that you have R 3.6.3 or above already installed on your computer or server. Before installing LIRA, please install all dependencies by executing the following command in R console:
 
-The dependencies includes`<IOBR>`,`<crayon>`,`<ggplot2>`,`<randomForest>`,`<randomForestSRC>`.
+The dependencies includes`IOBR`,`crayon`,`ggplot2`,`randomForest`,`randomForestSRC`.
 
 
 #### Graphical abstract for construction and clinical application of LIRA
 ![LIRA logo](./man/figures/LIRA-workflow.png)
 
-```{r installation, warning=FALSE}
+```{r installation, warning=FALSE, message=FALSE}
 if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-
 depens<-c("IOBR", "crayon", "ggplot2", "randomForest", "randomForestSRC")
 for(i in 1:length(depens)){
   depen<-depens[i]
@@ -54,7 +51,6 @@ if (!requireNamespace("LIRA", quietly = TRUE))
 ```
 
 Load the IOBR package in your R session after the installation is complete:
-
 ```{r message=FALSE, warning=FALSE}
 library(LIRA)
 library(IOBR)
@@ -68,29 +64,44 @@ if (!requireNamespace("UCSCXenaTools", quietly = TRUE))
     BiocManager::install("UCSCXenaTools")
 library(UCSCXenaTools)
 
-eset_LUAD<-XenaGenerate(subset = XenaCohorts =="GDC TCGA Lung Adenocarcinoma (LUAD)") %>% 
+eset<-XenaGenerate(subset = XenaCohorts =="GDC TCGA Lung Adenocarcinoma (LUAD)") %>% 
   XenaFilter(filterDatasets    = "TCGA-LUAD.htseq_counts.tsv") %>% 
   XenaQuery() %>%
   XenaDownload() %>% 
   XenaPrepare()
 
 # Remove the version numbers in Ensembl ID.
-eset_LUAD$Ensembl_ID<-substring(eset_LUAD$Ensembl_ID, 1, 15)
-eset_LUAD<-column_to_rownames(eset_LUAD, var = "Ensembl_ID")
+eset$Ensembl_ID<-substring(eset$Ensembl_ID, 1, 15)
+eset<-column_to_rownames(eset, var = "Ensembl_ID")
 # Revert back to original format because the data from UCSC was log2(x+1)transformed.
-eset_LUAD<-(2^eset_LUAD)-1
-head(eset_LUAD[1:5,1:5])
+eset<-(2^eset)-1
+head(eset[1:5,1:5])
+
+#remove normal sample of LUAD
+eset<- eset[,!substring(colnames(eset), 14,16)=="11A"]
+colnames(eset)<- substring(colnames(eset), 1,12)
+summary(duplicated(colnames(eset)))
+eset<- eset[,!duplicated(colnames(eset))]
+########################################
 ```
 
-### Annotate genes in expression matrix and remove duplicate genes using IOBR package.
+
 ```{r}
-eset_LUAD <- anno_eset(eset = eset_LUAD, annotation = anno_grch38, probe = "id", symbol = "symbol")
+eset_tpm <- count2tpm(countMat = eset, idType = "Ensembl")
+#using phenotype data derived from TCGA paper [https://pubmed.ncbi.nlm.nih.gov/34019806/]
+data(pdata_luad)
+summary(pdata_luad$ID%in%colnames(eset))
+```
+
+### Annotate genes in expression matrix and remove duplicate genes using IOBR package[].
+```{r}
+eset <- anno_eset(eset = eset, annotation = anno_grch38, probe = "id", symbol = "symbol")
 ```
 
 ## Calculate riskscore of TCGA
-We offer two methods to calculate the riskscore for samples in different scenarios. One method involves calculating the score for individual samples by inputting them into the LIRA algorithm, while the other method involves calculating the score for multiple samples by inputting them together. Users can choose the appropriate method based on your needs, using the `<loop>` parameter. We utilize data from the OAK and POPLAR studies as reference data to help users understand the distribution of scores for their samples.
+We offer two methods to calculate the `LIRA` score for samples in different scenarios. One method involves calculating the score for individual samples by inputting them into the LIRA algorithm, while the other method involves calculating the score for multiple samples by inputting them together. We utilize data from the OAK studies as reference data to help users understand the distribution of scores for their samples.
 ```{r}
-res      <- lira_model2(eset       = eset_LUAD,
+res      <- lira_model2(eset       = eset,
                         ref        = T, 
                         loop       = FALSE,
                         check_eset = T, 
@@ -99,9 +110,59 @@ res      <- lira_model2(eset       = eset_LUAD,
                         scale      = TRUE,
                         plot       = FALSE,
                         return_all = T)
+colnames(res)[2] <- "LIRA"
+```
+
+```{r}
+table(res$cohort)
+p1<- ggplot(res, aes(x= LIRA, fill= cohort)) +
+  geom_histogram(bins = 30, colour = "grey", alpha = 0.5)+
+  design_mytheme(axis_angle = 0)+
+  scale_fill_manual(values = palettes(palette = "jco", show_col = FALSE))
 ```
 
 
+```{r, fig.width=13, fig.height=7}
+library(survminer)
+res<- res[res$cohort=="validation", ]
+head(res)
+res<- best_cutoff(pdata = res, time = "os_time", status = "os_status", variable = "LIRA")
+# help("surv_group")
+p2<- surv_group(
+  input_pdata     = res,
+  target_group    = "LIRA_binary",
+  levels          = c("High", "Low"),
+  reference_group = "High",
+  project         = "TCGA-LUAD",
+  time            = "time",
+  status          = "status",
+  time_type       = "day",
+  break_month     = "auto",
+  cols            = NULL,
+  palette         = "jama",
+  mini_sig        = "",
+  save_path       = paste0("man/figures"))
+
+p1+p2
+```
+
+
+```{r}
+tme<- calculate_sig_score(eset = eset_tpm, pdata = res, signature = signature_collection, method = "PCA")
+colnames(tme)
+p1<- sig_box(data = tme, signature = "CD_8_T_effector", variable = "LIRA_binary", palette = "jama")
+p2<- sig_box(data = tme, signature = "Nature_metabolism_Hypoxia", variable = "LIRA_binary", palette = "jama")
+p3<- sig_box(data = tme, signature = "Ferroptosis", variable = "LIRA_binary", palette = "jama")
+p4<- sig_box(data = tme, signature = "Glutathione_Metabolism", variable = "LIRA_binary", palette = "jama")
+```
+
+Combination of plots
+```{r, fig.width=13, fig.height=7}
+if (!requireNamespace("patchwork", quietly = TRUE)) install.packages("patchwork")
+library(patchwork)
+p<-(p1|p2|p3|p4)
+p + plot_annotation(tag_levels = 'A')
+```
 
 
 References
