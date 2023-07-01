@@ -77,12 +77,11 @@ eset<-column_to_rownames(eset, var = "Ensembl_ID")
 eset<-(2^eset)-1
 head(eset[1:5,1:5])
 
-#remove normal sample of LUAD
+#remove normal sample of TCGA-LUAD
 eset<- eset[,!substring(colnames(eset), 14,16)=="11A"]
 colnames(eset)<- substring(colnames(eset), 1,12)
 summary(duplicated(colnames(eset)))
 eset<- eset[,!duplicated(colnames(eset))]
-########################################
 ```
 
 
