@@ -8,7 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
+  fig.path = "man/figures/",
   out.width = "100%"
 )
 ```
@@ -17,39 +17,100 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 <!-- badges: end -->
+LIRA is an R package to predict the effectiveness of immunotherapy in patients with NSCLC.
 
-The goal of LIRA is to ...
+## 1.Introduction
+  1.LIRA was designed to predict the reponse to immunotherapy in patients with NSCLC.
+  2.This package consists a random survival model based on expression profiles of 50 genes, which were selected through univariate Cox regression and subgroup analysis.
+  3.This package providers functions for different scenarios and allows visual assessment to determine whether patients are suitable for immunotherapy.
 
-## Installation
+## 2.Installation
+It is essential that you have R 3.6.3 or above already installed on your computer or server. Before installing LIRA, please install all dependencies by executing the following command in R console:
 
-You can install the development version of LIRA from [GitHub](https://github.com/) with:
+The dependencies includes`<IOBR>`,`<crayon>`,`<ggplot2>`,`<randomForest>`,`<randomForestSRC>`.
 
-``` r
-# install.packages("devtools")
-devtools::install_github("LiaoWJLab/LIRA")
+
+#### Graphical abstract for construction and clinical application of LIRA
+![LIRA logo](./man/figures/LIRA-workflow.png)
+
+```{r installation, warning=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+
+depens<-c("IOBR", "crayon", "ggplot2", "randomForest", "randomForestSRC")
+for(i in 1:length(depens)){
+  depen<-depens[i]
+  if (!requireNamespace(depen, quietly = TRUE))
+    BiocManager::install(depen,update = FALSE)
+}
+
+if (!requireNamespace("IOBR", quietly = TRUE))
+  devtools::install_github("IOBR/IOBR")
 ```
 
-## Example
+Then, you can start to install IOBR from github by typing the following code into your R session:
+```{r warning=FALSE}
+if (!requireNamespace("LIRA", quietly = TRUE))
+  remotes::install_github("LiaoWJLab/LIRA")
+```
 
-This is a basic example which shows you how to solve a common problem:
+Load the IOBR package in your R session after the installation is complete:
 
-```{r example}
+```{r message=FALSE, warning=FALSE}
 library(LIRA)
-## basic example code
+library(IOBR)
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+## 3.Usage
+### Obtain dataset from TCGA using UCSCXenaTools R package.
+For transcriptomic data of TCGA data sets, we strongly recommend user to use UCSCXenaTools R package. Here, we download counts data of TCGA-LUAD from UCSC using UCSCXenaTools R package
+```{r}
+if (!requireNamespace("UCSCXenaTools", quietly = TRUE))
+    BiocManager::install("UCSCXenaTools")
+library(UCSCXenaTools)
 
-```{r cars}
-summary(cars)
+eset_LUAD<-XenaGenerate(subset = XenaCohorts =="GDC TCGA Lung Adenocarcinoma (LUAD)") %>% 
+  XenaFilter(filterDatasets    = "TCGA-LUAD.htseq_counts.tsv") %>% 
+  XenaQuery() %>%
+  XenaDownload() %>% 
+  XenaPrepare()
+
+# Remove the version numbers in Ensembl ID.
+eset_LUAD$Ensembl_ID<-substring(eset_LUAD$Ensembl_ID, 1, 15)
+eset_LUAD<-column_to_rownames(eset_LUAD, var = "Ensembl_ID")
+# Revert back to original format because the data from UCSC was log2(x+1)transformed.
+eset_LUAD<-(2^eset_LUAD)-1
+head(eset_LUAD[1:5,1:5])
 ```
 
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
+### Annotate genes in expression matrix and remove duplicate genes using IOBR package.
+```{r}
+eset_LUAD <- anno_eset(eset = eset_LUAD, annotation = anno_grch38, probe = "id", symbol = "symbol")
 ```
 
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+## Calculate riskscore of TCGA
+We offer two methods to calculate the riskscore for samples in different scenarios. One method involves calculating the score for individual samples by inputting them into the LIRA algorithm, while the other method involves calculating the score for multiple samples by inputting them together. Users can choose the appropriate method based on your needs, using the `<loop>` parameter. We utilize data from the OAK and POPLAR studies as reference data to help users understand the distribution of scores for their samples.
+```{r}
+res      <- lira_model2(eset       = eset_LUAD,
+                        ref        = T, 
+                        loop       = FALSE,
+                        check_eset = T, 
+                        pdata      = NULL,
+                        id_pdata   = "ID",
+                        scale      = TRUE,
+                        plot       = FALSE,
+                        return_all = T)
+```
+
+
+
+
+References
+---------
+1.Zeng D, Fang Y, Chen G, ..., Liao W; Predicting NSCLC immunotherapy resistance based on Random Forest Model. (2023) *Under Review*.
+
+
+Reporting bugs
+---------
+Please report bugs to the [Github issues page](https://github.com/LiaoLab/LIRA/issues)
+
+E-mail any questions to dongqiangzeng0808@gmail.com

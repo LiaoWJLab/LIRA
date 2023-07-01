@@ -13,11 +13,12 @@ lira_heatmap(
   path = NULL,
   anonymous = TRUE,
   remove_batch = TRUE,
-  method = "tpm"
+  method = "tpm",
+  show_plot = TRUE
 )
 }
 \arguments{
-\item{remove_batch}{}
+\item{show_plot}{}
 }
 \description{
 Title

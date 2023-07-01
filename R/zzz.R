@@ -24,7 +24,7 @@
                 "  For help: https://github.com/LiaoWJ_Lab/LIRA/issues", "\n\n")
 
   citation <-paste0(" If you use ", pkgname, " in published research, please cite:\n",
-                    " DQ Zeng, YR Fang, …, WJ Liao*.\n",
+                    " DQ Zeng, YR Fang, G Chen, …, WJ Liao*.\n",
                     " LIRA: Predicting NSCLC immunotherapy resistance based on Random Forest Model, Under Review \n ",
                     # " Journal of Thoracic Oncology. 12:687975,(2023). \n",
                     # " XXXX, 2020", "\n",

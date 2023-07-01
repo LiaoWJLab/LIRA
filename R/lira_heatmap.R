@@ -16,12 +16,14 @@
 #' @param path
 #' @param anonymous
 #' @param remove_batch
+#' @param method
+#' @param show_plot
 #'
 #' @return
 #' @export
 #'
 #' @examples
-lira_heatmap<-function(eset, pdata = NULL, id_pdata = "ID", BOR = "BOR", palette_heatmap = 6, path = NULL, anonymous = TRUE, remove_batch = TRUE, method = "tpm"){
+lira_heatmap<-function(eset, pdata = NULL, id_pdata = "ID", BOR = "BOR", palette_heatmap = 6, path = NULL, anonymous = TRUE, remove_batch = TRUE, method = "tpm", show_plot = TRUE){
 
 
   if(!is.null(path)){
@@ -197,7 +199,7 @@ lira_heatmap<-function(eset, pdata = NULL, id_pdata = "ID", BOR = "BOR", palette
                 scale = TRUE,
                 palette = palette_heatmap,
                 width = 5.4, show_heatmap_col_name = TRUE, angle_col = 60,
-                path = path, index = paste0(i, "-", pat_id) )
+                path = path, index = paste0(i, "-", pat_id), show_plot = show_plot)
 
     save(input, file = paste0(abspath, i, "-", pat_id, "-heatmap-data.RData"))
     ############################
