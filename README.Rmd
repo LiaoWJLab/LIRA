@@ -36,12 +36,10 @@ if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocMana
 depens<-c("IOBR", "crayon", "ggplot2", "randomForest", "randomForestSRC")
 for(i in 1:length(depens)){
   depen<-depens[i]
-  if (!requireNamespace(depen, quietly = TRUE))
-    BiocManager::install(depen,update = FALSE)
+  if (!requireNamespace(depen, quietly = TRUE))   BiocManager::install(depen,update = FALSE)
 }
 
-if (!requireNamespace("IOBR", quietly = TRUE))
-  devtools::install_github("IOBR/IOBR")
+if (!requireNamespace("IOBR", quietly = TRUE))  devtools::install_github("IOBR/IOBR")
 ```
 
 Then, you can start to install IOBR from github by typing the following code into your R session:
@@ -54,22 +52,24 @@ Load the IOBR package in your R session after the installation is complete:
 ```{r message=FALSE, warning=FALSE}
 library(LIRA)
 library(IOBR)
+library(tidyverse)
 ```
 
 ## 3.Usage
 ### Obtain dataset from TCGA using UCSCXenaTools R package.
 For transcriptomic data of TCGA data sets, we strongly recommend user to use UCSCXenaTools R package. Here, we download counts data of TCGA-LUAD from UCSC using UCSCXenaTools R package
 ```{r}
-if (!requireNamespace("UCSCXenaTools", quietly = TRUE))
-    BiocManager::install("UCSCXenaTools")
-library(UCSCXenaTools)
+# if (!requireNamespace("UCSCXenaTools", quietly = TRUE))
+#     BiocManager::install("UCSCXenaTools")
+# library(UCSCXenaTools)
+# 
+# eset<-XenaGenerate(subset = XenaCohorts =="GDC TCGA Lung Adenocarcinoma (LUAD)") %>% 
+#   XenaFilter(filterDatasets    = "TCGA-LUAD.htseq_counts.tsv") %>% 
+#   XenaQuery() %>%
+#   XenaDownload() %>% 
+#   XenaPrepare()
 
-eset<-XenaGenerate(subset = XenaCohorts =="GDC TCGA Lung Adenocarcinoma (LUAD)") %>% 
-  XenaFilter(filterDatasets    = "TCGA-LUAD.htseq_counts.tsv") %>% 
-  XenaQuery() %>%
-  XenaDownload() %>% 
-  XenaPrepare()
-
+eset<- readr::read_tsv("TCGA-LUAD.htseq_counts.tsv.gz")
 # Remove the version numbers in Ensembl ID.
 eset$Ensembl_ID<-substring(eset$Ensembl_ID, 1, 15)
 eset<-column_to_rownames(eset, var = "Ensembl_ID")
@@ -104,7 +104,7 @@ res      <- lira_model2(eset       = eset,
                         ref        = T, 
                         loop       = FALSE,
                         check_eset = T, 
-                        pdata      = NULL,
+                        pdata      = pdata_luad,
                         id_pdata   = "ID",
                         scale      = TRUE,
                         plot       = FALSE,
@@ -124,7 +124,7 @@ p1<- ggplot(res, aes(x= LIRA, fill= cohort)) +
 ```{r, fig.width=13, fig.height=7}
 library(survminer)
 res<- res[res$cohort=="validation", ]
-head(res)
+# head(res)
 res<- best_cutoff(pdata = res, time = "os_time", status = "os_status", variable = "LIRA")
 # help("surv_group")
 p2<- surv_group(
@@ -146,9 +146,9 @@ p1+p2
 ```
 
 
-```{r}
+```{r, message=FALSE, results='hide',warning=FALSE, fig.show='hide'}
 tme<- calculate_sig_score(eset = eset_tpm, pdata = res, signature = signature_collection, method = "PCA")
-colnames(tme)
+# colnames(tme)
 p1<- sig_box(data = tme, signature = "CD_8_T_effector", variable = "LIRA_binary", palette = "jama")
 p2<- sig_box(data = tme, signature = "Nature_metabolism_Hypoxia", variable = "LIRA_binary", palette = "jama")
 p3<- sig_box(data = tme, signature = "Ferroptosis", variable = "LIRA_binary", palette = "jama")
@@ -156,7 +156,7 @@ p4<- sig_box(data = tme, signature = "Glutathione_Metabolism", variable = "LIRA_
 ```
 
 Combination of plots
-```{r, fig.width=13, fig.height=7}
+```{r, fig.width = 13, fig.height = 6}
 if (!requireNamespace("patchwork", quietly = TRUE)) install.packages("patchwork")
 library(patchwork)
 p<-(p1|p2|p3|p4)

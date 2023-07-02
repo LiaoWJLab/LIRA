@@ -6,3 +6,4 @@
 ^3-Testing-functions\.R$
 ^LICENSE\.md$
 ^4-LIRA-validation-in-TCGA-LUAD\.R$
+^TCGA-LUAD\.htseq_counts\.tsv\.gz$
