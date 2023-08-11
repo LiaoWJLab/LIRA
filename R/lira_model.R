@@ -2,20 +2,20 @@
 
 
 
-#' Title
+#' This function uses the LIRA model to predict new data and return the results.
 #'
-#' @param eset processed gene expression data is reconmend
-#' @param pdata
-#' @param id_pdata
-#' @param scale
-#' @param plot
-#' @param check_eset
+#' @param eset The input expression matrix.
+#' @param pdata additional patient data to include in the analysis (default is NULL).
+#' @param id_pdata The identifier column name in pdata (default is "ID").
+#' @param scale A logical value indicating whether to scale the data (default is FALSE).
+#' @param check_eset A logical value indicating whether to remove outlier genes from the input expression matrix (default is FALSE).
+#' @param from_rbatch A logical value indicating whether the sample was processed by the rbatch pipeline (default is TRUE).
 #'
 #' @return
 #' @export
 #'
 #' @examples
-lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, plot = FALSE, check_eset = FALSE){
+lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_eset = FALSE, from_rbatch = TRUE){
 
   if(!is.matrix(eset)) eset<-as.matrix(eset)
   ###########################################
@@ -33,7 +33,7 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, plot = 
     eset<-eset[rownames(eset)%in%genes, ]
   }
   #############################################
-  data("rf_feas")
+  data("rf_feas", package = "LIRA")
   #############################################
   # freq1<-length(intersect(rf_feas,rownames(eset)))/length(rf_feas)
   # if(freq1<0.5){
@@ -44,7 +44,7 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, plot = 
   #   cat(crayon::green(msg2))
   # }
   ###########################################
-  data("rf_model")
+  data("rf_model", package = "LIRA")
   ############################################
   # https://github.com/r-lib/crayon
   cat(crayon::green(">>>-- Predicting new data with LIRA model...\n"))
@@ -55,6 +55,14 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, plot = 
                                   feas_genes   = rf_feas,
                                   prefix       = c("\\-","_"),
                                   id_pdata_new = id_pdata)
+  ##########################################
+  if(from_rbatch){
+    cat(crayon::red(">>>=== This sample was testing by RNAseq and was processessed by rbatch pipline... \n"))
+    cat(crayon::red(">>>=== The LIRA score will be normalised to a range of 1-10 ... \n"))
+    res$score$LIRA <- (res$score$LIRA - 100)/15
+
+  }
+
   cat(crayon::green(">>>-- DONE! \n"))
 
   return(res)

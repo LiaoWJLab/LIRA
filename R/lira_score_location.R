@@ -18,13 +18,18 @@
 #' @param cols manual colors for objective response
 #' @param panel option = `OS`, `PFS`
 #' @param ref_score reference score of plot
-#' @param pat_id patient identifier
+#' @param id_score patient identifier
+#' @param col_score
+#' @param best_cutoff
+#' @param bins_width
+#' @param pat_id
 #'
 #' @return
 #' @export
 #'
 #' @examples
-lira_score_location<-function(score, pat_id = "ID", col_score = "riskscore", ref_score = ref_lira_score, palette = "nrc", cols = NULL, palette_line = "jama", showplot = TRUE, path = NULL, panel = "OS", bins_width = 33){
+lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "riskscore", best_cutoff = NULL, ref_score = NULL,
+                              palette = "nrc", cols = NULL, palette_line = "jama", showplot = TRUE, path = NULL, panel = "OS", bins_width = 33){
 
 
   score<-as.data.frame(score)
@@ -49,74 +54,78 @@ lira_score_location<-function(score, pat_id = "ID", col_score = "riskscore", ref
                         show_col = FALSE,
                         alpha = 1)
   ###############################
-  # data(ref_lira_score)
-  ###############################
 
-  colnames(score)[which(colnames(score)==pat_id)] <- "ID"
+  colnames(score)[which(colnames(score)==id_score)] <- "ID"
   colnames(score)[which(colnames(score)==col_score)] <- "riskscore"
 
-  pats<-as.character(score$ID)
+  if(is.null(ref_score)){
+    ref_score <- score
+    print(ref_score[ref_score$ID==pat_id, ])
+    ref_score[ref_score$ID==pat_id, "BOR"] <- "NE"
+  }else{
+    data("ref_lira_score", package = "LIRA")
+    ref_score <- ref_lira_score
+  }
+  ###############################
   ###############################
   var<- "LIRA score"
-  for (i in 1:length(pats)) {
 
-    pat<-pats[i]
-    # print(paste0(">>> Processing patient: ", pat))
+  pat<-pat_id
+  # print(paste0(">>> Processing patient: ", pat))
 
+  if(is.null(best_cutoff)){
     if(panel == "PFS"){
-
       cutoff_all<-18.948
-      pat_score<-score[score$ID==pat,]$riskscore
-
     }else if(panel == "OS"){
-
       cutoff_all<-19.464
-      pat_score<-score[score$ID==pat,]$riskscore
     }
-
-
-    pat_score<-round(pat_score, 3)
-    message(paste0(">>> ", "LIRA score", " of ", pat, " is ", pat_score))
-    target<-sym("riskscore")
-
-    pat_split<-unlist(stringr::str_split(pat, pattern = "_"))
-
-    subt<-paste0("Sample name: ", pat_split[1])
-    ###################################################################
-    #参考链接：https://blog.csdn.net/weixin_45387324/article/details/109408376
-    p<-ggplot(ref_score, aes(x= !!target, fill= BOR)) +
-      geom_histogram(bins = bins_width, colour = "grey", alpha = 0.5)+    #aes(y=..density..),
-      scale_fill_manual(values= cols)+
-      geom_density(alpha=.2, fill="grey", weight = 1)+
-
-      labs(title=  paste0("LIRA score", " = ", pat_score),
-           subtitle= paste0(subt),
-           caption = paste0(" Data of RNAseq: ",panel, ";  ","BC: best cutoff;   ", date()))+
-
-      # xlab(paste0(target))+
-      theme_light()+
-      design_mytheme(legend.position = "bottom", axis_angle = 0, plot_title_size = 1.7, axis_title_size = 1.4)+
-      xlab("LIRA score of 439 NSCLC patients treated with immunotherapy") +ylab("Count of patients")
-
-    p<-p+geom_vline(aes(xintercept = cutoff_all),
-                    linetype="dashed",
-                    color = cols2[1],
-                    size = 0.70)+
-      annotate(geom = "text", fontface = "plain", color= cols2[1],
-               x = cutoff_all - 1.5, y= 5,hjust = 0,
-               label = paste0('BC of ', panel, ' = ', cutoff_all), size=4.5, angle = 60)+
-
-
-      geom_vline(aes(xintercept = pat_score),
-                 linetype="dashed",color = "black", size = 0.70)+
-      annotate(geom = "text", fontface = "plain", color= "black",
-               x = pat_score - 1.5, y = 5, hjust = 0,
-               label = paste0( var, ' of smaple = ', pat_score), size=4.5, angle = 60)
-
-    if(showplot) print(p)
-    ggsave(p,filename =paste0(i,"-",pat,"-",var,".pdf"),
-           width = 7.64,height = 5.76, path = path, dpi = 300)
-
+  }else{
+    cutoff_all <- best_cutoff
   }
+
+  pat_score<-score[score$ID==pat,]$riskscore
+  pat_score<-round(pat_score, 3)
+  message(paste0(">>> ", "LIRA score", " of ", pat, " is ", pat_score))
+  target<-sym("riskscore")
+
+  pat_split<-unlist(stringr::str_split(pat, pattern = "_"))
+
+  subt<-paste0("Sample name: ", pat_split[1])
+  ###################################################################
+  #参考链接：https://blog.csdn.net/weixin_45387324/article/details/109408376
+
+  p<- ggplot(ref_score, aes(x= !!target, fill= BOR)) +
+    geom_histogram(bins = bins_width, colour = "grey", alpha = 0.5)+    #aes(y=..density..),
+    scale_fill_manual(values= cols)+
+    geom_density(alpha=.2, fill="grey", weight = 1)+
+
+    labs(title=  paste0("LIRA score", " = ", pat_score),
+         subtitle= paste0(subt),
+         caption = paste0(" Data of RNAseq: ",panel, ";  ","BC: best cutoff;   ", date()))+
+
+    # xlab(paste0(target))+
+    theme_light()+
+    design_mytheme(legend.position = "bottom", axis_angle = 0, plot_title_size = 1.7, axis_title_size = 1.4)+
+    xlab("LIRA score of 439 NSCLC patients treated with ICB") +ylab("Count of patients")
+
+  p<-p+geom_vline(aes(xintercept = cutoff_all),
+                  linetype="dashed",
+                  color = cols2[1],
+                  size = 0.70)+
+    annotate(geom = "text", fontface = "plain", color= cols2[1],
+             x = cutoff_all - 1.5, y= 5,hjust = 0,
+             label = paste0('BC of ', panel, ' = ', cutoff_all), size=4.5, angle = 60)+
+
+
+    geom_vline(aes(xintercept = pat_score),
+               linetype="dashed",color = "black", size = 0.70)+
+    annotate(geom = "text", fontface = "plain", color= "black",
+             x = pat_score - 1.5, y = 5, hjust = 0,
+             label = paste0( var, ' of smaple = ', pat_score), size=4.5, angle = 60)
+
+  if(showplot) print(p)
+  ggsave(p,filename =paste0(pat,"-",var,".pdf"),
+         width = 7.64,height = 5.76, path = path, dpi = 300)
+
 
 }

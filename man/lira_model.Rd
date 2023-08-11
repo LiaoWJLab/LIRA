@@ -2,22 +2,30 @@
 % Please edit documentation in R/lira_model.R
 \name{lira_model}
 \alias{lira_model}
-\title{Title}
+\title{This function uses the LIRA model to predict new data and return the results.}
 \usage{
 lira_model(
   eset,
   pdata = NULL,
   id_pdata = "ID",
   scale = FALSE,
-  plot = FALSE,
-  check_eset = FALSE
+  check_eset = FALSE,
+  from_rbatch = TRUE
 )
 }
 \arguments{
-\item{eset}{processed gene expression data is reconmend}
+\item{eset}{The input expression matrix.}
 
-\item{check_eset}{}
+\item{pdata}{additional patient data to include in the analysis (default is NULL).}
+
+\item{id_pdata}{The identifier column name in pdata (default is "ID").}
+
+\item{scale}{A logical value indicating whether to scale the data (default is FALSE).}
+
+\item{check_eset}{A logical value indicating whether to remove outlier genes from the input expression matrix (default is FALSE).}
+
+\item{from_rbatch}{A logical value indicating whether the sample was processed by the rbatch pipeline (default is TRUE).}
 }
 \description{
-Title
+This function uses the LIRA model to predict new data and return the results.
 }

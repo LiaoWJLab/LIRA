@@ -2,7 +2,7 @@
 % Please edit documentation in R/predict_rf_cox_model.R
 \name{predict_rf_model_cox}
 \alias{predict_rf_model_cox}
-\title{Title}
+\title{This function predicts the risk score using the random forest survival model (sur_model) on new data (eset_new).}
 \usage{
 predict_rf_model_cox(
   sur_model,
@@ -11,13 +11,24 @@ predict_rf_model_cox(
   feas = NULL,
   feas_genes = NULL,
   prefix = c("-", "\\\\:"),
-  id_pdata_new = "ID",
-  na_replace = 1
+  id_pdata_new = "ID"
 )
 }
 \arguments{
-\item{feas_genes}{}
+\item{sur_model}{The random forest survival model.}
+
+\item{eset_new}{The new input expression matrix.}
+
+\item{pdata_new}{Additional patient data to include in the analysis (default is NULL).}
+
+\item{feas}{Features to be included in the analysis (default is NULL).}
+
+\item{feas_genes}{Genes to be included in the analysis (default is NULL).}
+
+\item{prefix}{A character vector specifying the prefix patterns to be replaced in the column names (default is c("-", "\:")).}
+
+\item{id_pdata_new}{The identifier column name in pdata}
 }
 \description{
-Title
+This function predicts the risk score using the random forest survival model (sur_model) on new data (eset_new).
 }

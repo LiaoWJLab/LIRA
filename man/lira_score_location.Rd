@@ -6,9 +6,11 @@
 \usage{
 lira_score_location(
   score,
-  pat_id = "ID",
+  pat_id,
+  id_score = "ID",
   col_score = "riskscore",
-  ref_score = ref_lira_score,
+  best_cutoff = NULL,
+  ref_score = NULL,
   palette = "nrc",
   cols = NULL,
   palette_line = "jama",
@@ -21,7 +23,9 @@ lira_score_location(
 \arguments{
 \item{score}{score}
 
-\item{pat_id}{patient identifier}
+\item{pat_id}{}
+
+\item{id_score}{patient identifier}
 
 \item{ref_score}{reference score of plot}
 

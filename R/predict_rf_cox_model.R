@@ -3,16 +3,15 @@
 
 
 
-#' Title
+#' This function predicts the risk score using the random forest survival model (sur_model) on new data (eset_new).
 #'
-#' @param sur_model
-#' @param eset_new
-#' @param feas
-#' @param pdata_new
-#' @param id_pdata_new
-#' @param prefix
-#' @param na_replace
-#' @param feas_genes
+#' @param sur_model The random forest survival model.
+#' @param eset_new The new input expression matrix.
+#' @param feas Features to be included in the analysis (default is NULL).
+#' @param pdata_new Additional patient data to include in the analysis (default is NULL).
+#' @param id_pdata_new The identifier column name in pdata
+#' @param prefix A character vector specifying the prefix patterns to be replaced in the column names (default is c("-", "\:")).
+#' @param feas_genes Genes to be included in the analysis (default is NULL).
 #'
 #' @return
 #' @export
@@ -24,8 +23,7 @@ predict_rf_model_cox<- function(sur_model,
                                 feas         = NULL,
                                 feas_genes   = NULL,
                                 prefix       = c("-", "\\:"),
-                                id_pdata_new = "ID",
-                                na_replace   = 1){
+                                id_pdata_new = "ID"){
 
   #######################################
   # library(tidyverse)
@@ -90,6 +88,7 @@ predict_rf_model_cox<- function(sur_model,
   # message("For rf model, 'feas' must containe 'time', 'status' and features: c('time','status', genes_train) ")
   eset_new<-eset_new[ ,colnames(eset_new)%in% feas]
   eset_new<- IOBR:: assimilate_data(eset_ref, eset_new)
+
   # print(eset_new[1:5, 1:5])
   #################################################
   riskscore      <- predict(sur_model,
@@ -98,7 +97,7 @@ predict_rf_model_cox<- function(sur_model,
                             importance = TRUE,
                             type = "risk")
   riskscore<-riskscore$predicted
-  riskscore<-data.frame("ID" = rownames(eset_new), "riskscore" = riskscore)
+  riskscore<-data.frame("ID" = rownames(eset_new), "LIRA" = riskscore)
 
   if(!is.null(pdata_new)){
     colnames(pdata_new)[which(colnames(pdata_new)==id_pdata_new)]<-"ID"
