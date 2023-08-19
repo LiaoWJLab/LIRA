@@ -18,7 +18,8 @@ lira_score_location(
   path = NULL,
   panel = "OS",
   bins_width = 33,
-  index = NULL
+  index = NULL,
+  title = "LIRA score"
 )
 }
 \arguments{

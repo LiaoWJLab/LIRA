@@ -29,7 +29,7 @@
 #'
 #' @examples
 lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "riskscore", best_cutoff = NULL, ref_score = NULL,
-                              palette = "nrc", cols = NULL, palette_line = "jama", showplot = TRUE, path = NULL, panel = "OS", bins_width = 33, index = NULL){
+                              palette = "nrc", cols = NULL, palette_line = "jama", showplot = TRUE, path = NULL, panel = "OS", bins_width = 33, index = NULL, title = "LIRA score"){
 
 
   score<-as.data.frame(score)
@@ -85,7 +85,7 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
 
   pat_score<-score[score$ID==pat,]$riskscore
   pat_score<-round(pat_score, 3)
-  message(paste0(">>> ", "LIRA score", " of ", pat, " is ", pat_score))
+  message(paste0(">>> ", title, " of ", pat, " is ", pat_score))
   target<-sym("riskscore")
 
   pat_split<-unlist(stringr::str_split(pat, pattern = "_"))
@@ -99,14 +99,14 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
     scale_fill_manual(values= cols)+
     geom_density(alpha=.2, fill="grey", weight = 1)+
 
-    labs(title=  paste0("LIRA score", " = ", pat_score),
+    labs(title=  paste0("score", " = ", pat_score),
          subtitle= paste0(subt),
          caption = paste0(" Data of RNAseq: ",panel, ";  ","BC: best cutoff;   ", date()))+
 
     # xlab(paste0(target))+
     theme_light()+
     design_mytheme(legend.position = "bottom", axis_angle = 0, plot_title_size = 1.7, axis_title_size = 1.4)+
-    xlab("LIRA score of 439 NSCLC patients treated with ICB") +ylab("Count of patients")
+    xlab(paste0(title, " of 439 NSCLC patients treated with ICB")) +ylab("Count of patients")
 
   p<-p+geom_vline(aes(xintercept = cutoff_all),
                   linetype="dashed",
