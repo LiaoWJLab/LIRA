@@ -29,7 +29,7 @@
 #'
 #' @examples
 lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "riskscore", best_cutoff = NULL, ref_score = NULL,
-                              palette = "nrc", cols = NULL, palette_line = "jama", showplot = TRUE, path = NULL, panel = "OS", bins_width = 33){
+                              palette = "nrc", cols = NULL, palette_line = "jama", showplot = TRUE, path = NULL, panel = "OS", bins_width = 33, index = NULL){
 
 
   score<-as.data.frame(score)
@@ -124,8 +124,14 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
              label = paste0( var, ' of smaple = ', pat_score), size=4.5, angle = 60)
 
   if(showplot) print(p)
-  ggsave(p,filename =paste0(pat,"-",var,".pdf"),
-         width = 7.64,height = 5.76, path = path, dpi = 300)
+  if(is.null(index)){
+    ggsave(p,filename =paste0(pat,"-",var,".pdf"),
+           width = 7.64,height = 5.76, path = path, dpi = 300)
+  }else{
+    ggsave(p,filename =paste0(pat,"-", index, "-", var, ".pdf"),
+           width = 7.64,height = 5.76, path = path, dpi = 300)
+  }
+
 
 
 }

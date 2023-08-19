@@ -17,7 +17,8 @@ lira_score_location(
   showplot = TRUE,
   path = NULL,
   panel = "OS",
-  bins_width = 33
+  bins_width = 33,
+  index = NULL
 )
 }
 \arguments{
