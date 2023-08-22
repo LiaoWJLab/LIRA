@@ -23,6 +23,8 @@
 #' @param best_cutoff
 #' @param bins_width
 #' @param pat_id
+#' @param index
+#' @param title
 #'
 #' @return
 #' @export

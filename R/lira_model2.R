@@ -32,7 +32,7 @@ lira_model2<-function(eset, org = "hsa", pdata = NULL, id_pdata = "ID", scale = 
       eset_ref<- ref_count_op_ensembl
     }
     if(gene_type=="symbol"){
-      data(ref_count_op_symbol)
+      data(ref_count_op_symbol, package = "LIRA")
       eset_ref<- ref_count_op_symbol
     }
 
@@ -90,7 +90,7 @@ lira_model2<-function(eset, org = "hsa", pdata = NULL, id_pdata = "ID", scale = 
        #######################################
 
 
-       res_l<- lira_model(eset_m, pdata = pdata, id_pdata = id_pdata, scale = scale, plot = FALSE, check_eset = TRUE)
+       res_l<- lira_model(eset_m, pdata = pdata, id_pdata = id_pdata, scale = scale, check_eset = TRUE)
        res_l<- res_l$score
        res<-rbind(res, res_l[1, ])
        message("")
@@ -125,7 +125,7 @@ lira_model2<-function(eset, org = "hsa", pdata = NULL, id_pdata = "ID", scale = 
 
   }else{
 
-    res<- lira_model(eset, pdata = pdata, id_pdata = id_pdata, scale = scale, plot = FALSE, check_eset = TRUE)
+    res<- lira_model(eset, pdata = pdata, id_pdata = id_pdata, scale = scale, check_eset = TRUE)
     res<- res$score
 
   }
