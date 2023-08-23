@@ -70,7 +70,7 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
   }
   ###############################
   ###############################
-  var<- "LIRA score"
+  var<- title
 
   pat<-pat_id
   # print(paste0(">>> Processing patient: ", pat))
@@ -101,7 +101,7 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
     scale_fill_manual(values= cols)+
     geom_density(alpha=.2, fill="grey", weight = 1)+
 
-    labs(title=  paste0("score", " = ", pat_score),
+    labs(title=  paste0(title, " = ", pat_score),
          subtitle= paste0(subt),
          caption = paste0(" Data of RNAseq: ",panel, ";  ","BC: best cutoff;   ", date()))+
 
@@ -130,7 +130,7 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
     ggsave(p,filename =paste0(pat,"-",var,".pdf"),
            width = 7.64,height = 5.76, path = path, dpi = 300)
   }else{
-    ggsave(p,filename =paste0(pat,"-", index, "-", var, ".pdf"),
+    ggsave(p,filename =paste0(index, "-", pat,"-",  var, ".pdf"),
            width = 7.64,height = 5.76, path = path, dpi = 300)
   }
 
