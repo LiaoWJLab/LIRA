@@ -25,8 +25,6 @@ lira_score_location(
 \arguments{
 \item{score}{score}
 
-\item{pat_id}{}
-
 \item{id_score}{patient identifier}
 
 \item{ref_score}{reference score of plot}
@@ -42,6 +40,8 @@ lira_score_location(
 \item{path}{path to save result}
 
 \item{panel}{option = `OS`, `PFS`}
+
+\item{title}{}
 }
 \description{
 Location of lira_score of each patient
