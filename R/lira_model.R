@@ -21,6 +21,7 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_e
   if(!is.matrix(eset)) eset<-as.matrix(eset)
   ###########################################
 
+  eset <- log2eset(eset)
   ############################################
   if(scale){
     cat(crayon::green(">>>-- Scaling data...\n"))
@@ -34,8 +35,8 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_e
     eset<-eset[rownames(eset)%in%genes, ]
   }
   #############################################
-
-  if(model==1){
+ # print(model)
+  if(model == 1){
     data("rf_model1", package = "LIRA")
     sur_model <- rf_model1
     data("rf_feas1", package = "LIRA")

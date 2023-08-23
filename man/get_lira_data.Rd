@@ -11,10 +11,6 @@ get_lira_data(
 )
 }
 \arguments{
-\item{id}{}
-
-\item{data_type}{}
-
 \item{path}{}
 }
 \description{

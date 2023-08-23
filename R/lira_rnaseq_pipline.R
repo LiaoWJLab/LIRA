@@ -178,7 +178,7 @@ lira_rnaseq_pipline <- function(pat_id, eset = NULL, data_type = "tpm", model = 
   }
 
   ################################
-  feas <- gsub(rf_feas, pattern = "_", replacement = "-")
+  feas <- gsub(feas, pattern = "_", replacement = "-")
   input <-IOBR:: combine_pd_eset(eset[,colnames(eset)%in%index], pdata = score[score$ARM=="IO", ], feas = feas)
 
   for (dd in 1:dim(input)[1]) {

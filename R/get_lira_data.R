@@ -6,16 +6,16 @@
 
 #' Title
 #'
-#' @param id 
-#' @param data_type 
-#' @param path 
+#' @param id
+#' @param data_type
+#' @param path
 #'
 #' @return
 #' @export
 #'
 #' @examples
 get_lira_data <- function(id = "LIRA0001", data_type = c("tpm", "scale_tpm", "count"), path = "E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/0-data/"){
-  
+
   if(data_type=="tpm"){
     (load(paste0(path, "Result-of-",id,"/4-2-eset-corrected-tpm-of-",id,".RData" )))
     eset <- eset_tpm_corrected
@@ -27,17 +27,17 @@ get_lira_data <- function(id = "LIRA0001", data_type = c("tpm", "scale_tpm", "co
     eset <- eset_count_corrected
   }
   ############################################
-  data("rf_feas", package = "LIRA")
-  feas <- gsub(rf_feas, pattern = "\\_", replacement = "-")
-  detect_miss(eset = eset, signature = feas)
-  
+  # data("rf_feas", package = "LIRA")
+  # feas <- gsub(rf_feas, pattern = "\\_", replacement = "-")
+  # detect_miss(eset = eset, signature = feas)
+
   message(">>>=== Dimension of eset: ")
   print(dim(eset))
   ############################################
-  
+
   data("colnames_eset", package = "rbatch")
   colnames(eset)[2:ncol(eset)] <- colnames_eset
-  
+
   return(eset)
 }
 
@@ -46,8 +46,8 @@ get_lira_data <- function(id = "LIRA0001", data_type = c("tpm", "scale_tpm", "co
 
 #' Title
 #'
-#' @param eset 
-#' @param signature 
+#' @param eset
+#' @param signature
 #'
 #' @return
 #' @export
@@ -73,14 +73,14 @@ detect_miss <- function(eset, signature){
 
 #' Title
 #'
-#' @param path 
+#' @param path
 #'
 #' @return
 #' @export
 #'
 #' @examples
 get_pdata_op <- function(path = "E:/03-NSCLC/17-NSCLC-OP/3-data-analysis/1-model/7-final-model/best-model-type3-34639-pfs-0.001-ICN-good/4-riskscore-pdata.RData"){
-  
+
   (load("E:/03-NSCLC/17-NSCLC-OP/3-data-analysis/1-model/7-final-model/best-model-type3-34639-pfs-0.001-ICN-good/4-riskscore-pdata.RData"))
   colnames(pdata_score)[2] <- "lira_ref"
   pdata_score$BOR <- ifelse(pdata_score$BOR=="", "NE", pdata_score$BOR)

@@ -7,8 +7,6 @@
 detect_miss(eset, signature)
 }
 \arguments{
-\item{eset}{}
-
 \item{signature}{}
 }
 \description{
