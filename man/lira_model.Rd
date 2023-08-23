@@ -10,7 +10,8 @@ lira_model(
   id_pdata = "ID",
   scale = FALSE,
   check_eset = FALSE,
-  from_rbatch = TRUE
+  from_rbatch = TRUE,
+  model = 1
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ lira_model(
 \item{check_eset}{A logical value indicating whether to remove outlier genes from the input expression matrix (default is FALSE).}
 
 \item{from_rbatch}{A logical value indicating whether the sample was processed by the rbatch pipeline (default is TRUE).}
+
+\item{model}{option = 1, or 2}
 }
 \description{
 This function uses the LIRA model to predict new data and return the results.

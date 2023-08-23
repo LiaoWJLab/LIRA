@@ -10,12 +10,13 @@
 #' @param scale A logical value indicating whether to scale the data (default is FALSE).
 #' @param check_eset A logical value indicating whether to remove outlier genes from the input expression matrix (default is FALSE).
 #' @param from_rbatch A logical value indicating whether the sample was processed by the rbatch pipeline (default is TRUE).
+#' @param model option = 1, or 2
 #'
 #' @return
 #' @export
 #'
 #' @examples
-lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_eset = FALSE, from_rbatch = TRUE){
+lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_eset = FALSE, from_rbatch = TRUE, model = 1){
 
   if(!is.matrix(eset)) eset<-as.matrix(eset)
   ###########################################
@@ -33,22 +34,36 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_e
     eset<-eset[rownames(eset)%in%genes, ]
   }
   #############################################
-  data("rf_feas", package = "LIRA")
+
+  if(model==1){
+    data("rf_model1", package = "LIRA")
+    sur_model <- rf_model1
+    data("rf_feas1", package = "LIRA")
+    rf_feas <- rf_feas1
+  }else if(model ==2 ){
+    data("rf_model2", package = "LIRA")
+    sur_model <- rf_model2
+    data("rf_feas2", package = "LIRA")
+    rf_feas <- rf_feas2
+  }
+
+  message(">>>=== Feature of model: ")
+  print(rf_feas)
   #############################################
-  # freq1<-length(intersect(rf_feas,rownames(eset)))/length(rf_feas)
-  # if(freq1<0.5){
-  #   msg1<- paste0(paste0(sprintf(">>>-- Only %1.2f%%", 100*freq1)," of model genes appear on gene matrix,\n interpret results with caution \n"))
-  #   cat(crayon::bgRed(msg1))
-  # }else if(freq1>=0.5){
-  #   msg2<- paste0(paste0(sprintf(">>>-- %1.2f%%", 100*freq1)," of model genes appear on gene matrix\n"))
-  #   cat(crayon::green(msg2))
-  # }
+  #############################################
+  freq1<-length(intersect(rf_feas,rownames(eset)))/length(rf_feas)
+  if(freq1<0.5){
+    msg1<- paste0(paste0(sprintf(">>>-- Only %1.2f%%", 100*freq1)," of model genes appear on gene matrix,\n interpret results with caution \n"))
+    cat(crayon::bgRed(msg1))
+  }else if(freq1>=0.5){
+    msg2<- paste0(paste0(sprintf(">>>-- %1.2f%%", 100*freq1)," of model genes appear on gene matrix\n"))
+    cat(crayon::green(msg2))
+  }
   ###########################################
-  data("rf_model", package = "LIRA")
-  ############################################
+
   # https://github.com/r-lib/crayon
   cat(crayon::green(">>>-- Predicting new data with LIRA model...\n"))
-  res<-      predict_rf_model_cox(sur_model    = rf_model,
+  res<-      predict_rf_model_cox(sur_model    = sur_model,
                                   eset_new     = eset,
                                   pdata_new    = pdata,
                                   feas         = NULL,

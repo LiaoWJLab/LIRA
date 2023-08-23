@@ -19,7 +19,8 @@
 #' @export
 #'
 #' @examples
-lira_model2<-function(eset, org = "hsa", pdata = NULL, id_pdata = "ID", scale = TRUE, plot = FALSE, ref = TRUE, loop = TRUE, check_eset = TRUE, return_all = FALSE, remove_batch = FALSE, method = "tpm"){
+lira_model2<-function(eset, org = "hsa", pdata = NULL, id_pdata = "ID", scale = TRUE, plot = FALSE, ref = TRUE, loop = TRUE,
+                      check_eset = TRUE, return_all = FALSE, remove_batch = FALSE, method = "tpm"){
 
   if(!is.matrix(eset)) eset<-as.matrix(eset)
   ###########################################
