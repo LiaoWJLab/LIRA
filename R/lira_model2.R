@@ -114,7 +114,7 @@ lira_model2<-function(eset, org = "hsa", pdata = NULL, id_pdata = "ID", scale = 
      eset_m<-merge(eset, eset_ref, by = "row.names", all = FALSE)
      eset_m <- remove_duplicate_genes(eset = eset_m, column_of_symbol = "Row.names")
      eset_m<-count2tpm( countMat = eset_m, idType = gene_type, org = org, source = "local")
-     res<- lira_model(eset_m, pdata = pdata, id_pdata = id_pdata, scale = scale, plot = FALSE, check_eset = TRUE)
+     res<- lira_model(eset_m, pdata = pdata, id_pdata = id_pdata, scale = scale, check_eset = TRUE)
      res<- res$score
      if(!return_all){
        res<- res[res$ID%in%colnames(eset), ]

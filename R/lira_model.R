@@ -75,7 +75,7 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_e
   if(from_rbatch){
     cat(crayon::red(">>>=== This sample was testing by RNAseq and was processessed by rbatch pipline... \n"))
     cat(crayon::red(">>>=== The LIRA score will be normalised to a range of 1-10 ... \n"))
-    res$score$LIRA <- (res$score$LIRA - 100)/15
+    res$score$LIRA <- (res$score$LIRA - 80) / 10 * -1  + 19
 
   }
 
