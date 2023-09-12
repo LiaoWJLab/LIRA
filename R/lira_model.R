@@ -77,6 +77,8 @@ lira_model<-function(eset, pdata = NULL, id_pdata = "ID", scale = FALSE, check_e
     cat(crayon::red(">>>=== The LIRA score will be normalised to a range of 1-10 ... \n"))
     res$score$LIRA <- (res$score$LIRA - 80) / 10 * -1  + 19
 
+  }else{
+    res$score$LIRA <- (res$score$LIRA - 80) / 10 * -1  + 19
   }
 
   cat(crayon::green(">>>-- DONE! \n"))
