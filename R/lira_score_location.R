@@ -97,7 +97,7 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
   #参考链接：https://blog.csdn.net/weixin_45387324/article/details/109408376
 
   p<- ggplot(ref_score, aes(x= !!target, fill= BOR)) +
-    geom_histogram(bins = bins_width, colour = "grey", alpha = 0.1)+    #aes(y=..density..),
+    geom_histogram(bins = bins_width, alpha = 0.76, colour = "grey")+    #aes(y=..density..),
     scale_fill_manual(values= cols)+
     geom_density(alpha=.2, fill="grey", weight = 1)+
 
@@ -110,20 +110,25 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
     design_mytheme(legend.position = "bottom", axis_angle = 0, plot_title_size = 1.7, axis_title_size = 1.4)+
     xlab(paste0(title, " of 439 NSCLC patients treated with ICB")) +ylab("Count of patients")
 
+  if(pat_score >= cutoff_all){
+    cols_pat <- '#B24745FF'
+  }else{
+    cols_pat <- '#00A1D5FF'
+  }
   p<-p+geom_vline(aes(xintercept = cutoff_all),
                   linetype="dashed",
                   color = cols2[1],
                   size = 0.45)+
     annotate(geom = "text", fontface = "plain", color= cols2[1],
-             x = cutoff_all - 1.5, y= 5,hjust = 0,
+             x = cutoff_all - 1.5, y= 15,hjust = 0,
              label = paste0('BC of ', panel, ' = ', cutoff_all), size=4.5, angle = 60)+
 
 
     geom_vline(aes(xintercept = pat_score),
-               linetype="dashed",color = "black", size = 0.45)+
-    annotate(geom = "text", fontface = "plain", color= "black",
-             x = pat_score - 1.5, y = 5, hjust = 0,
-             label = paste0( var, ' of smaple = ', pat_score), size=4.5, angle = 60)
+               linetype="dashed",color = "black", size = 0.55)+
+    annotate(geom = "text", fontface = "plain", color= cols_pat,
+             x = pat_score - 1.5, y = 20, hjust = 0,
+             label = paste0( var, ' = ', pat_score), size= 5.5, angle = 60)
 
   if(showplot) print(p)
   if(is.null(index)){
