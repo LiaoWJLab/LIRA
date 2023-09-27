@@ -55,19 +55,23 @@ library(tidyverse)
 ```
 
 ## 3.Usage
+
 ### Obtain dataset from TCGA using UCSCXenaTools R package.
 For transcriptome data of TCGA data sets, we strongly recommend user to use UCSCXenaTools R package. Here, we download counts data of TCGA-LUAD from UCSC using UCSCXenaTools R package
-```{r}
-# if (!requireNamespace("UCSCXenaTools", quietly = TRUE))
-#     BiocManager::install("UCSCXenaTools")
-# library(UCSCXenaTools)
-# 
-# eset<-XenaGenerate(subset = XenaCohorts =="GDC TCGA Lung Adenocarcinoma (LUAD)") %>% 
-#   XenaFilter(filterDatasets    = "TCGA-LUAD.htseq_counts.tsv") %>% 
-#   XenaQuery() %>%
-#   XenaDownload() %>% 
-#   XenaPrepare()
 
+```{r, eval=FALSE}
+if (!requireNamespace("UCSCXenaTools", quietly = TRUE))
+    BiocManager::install("UCSCXenaTools")
+library(UCSCXenaTools)
+
+eset<-XenaGenerate(subset = XenaCohorts =="GDC TCGA Lung Adenocarcinoma (LUAD)") %>%
+  XenaFilter(filterDatasets    = "TCGA-LUAD.htseq_counts.tsv") %>%
+  XenaQuery() %>%
+  XenaDownload() %>%
+  XenaPrepare()
+```
+
+```{r, message=FALSE, warning=FALSE}
 eset<- readr::read_tsv("TCGA-LUAD.htseq_counts.tsv.gz")
 # Remove the version numbers in Ensembl ID.
 eset$Ensembl_ID<-substring(eset$Ensembl_ID, 1, 15)
@@ -83,7 +87,7 @@ summary(duplicated(colnames(eset)))
 eset<- eset[,!duplicated(colnames(eset))]
 ```
 
-
+### Transform count data to TPM using [IOBR package](https://iobr.github.io/book/).
 ```{r}
 eset_tpm <- count2tpm(countMat = eset, idType = "Ensembl")
 #using phenotype data derived from TCGA paper [https://pubmed.ncbi.nlm.nih.gov/34019806/]
@@ -97,33 +101,27 @@ eset <- anno_eset(eset = eset, annotation = anno_grch38, probe = "id", symbol = 
 ```
 
 ## Calculate LIRA score of TCGA-LUAD samples
-We offer two methods to calculate the `LIRA` score for samples in different scenarios. One method involves calculating the score for individual samples by inputting them into the LIRA algorithm, while the other method involves calculating the score for multiple samples by inputting them together. We utilize data from the OAK studies as reference data to help users understand the distribution of scores for their samples.
-```{r}
+
+```{r, message=FALSE, warning=FALSE}
 res      <-  lira_model(eset       = eset,
-                        ref        = NULL, 
-                        loop       = FALSE,
-                        check_eset = FALSE, 
                         pdata      = pdata_luad,
                         id_pdata   = "ID",
-                        scale      = TRUE,
-                        plot       = FALSE,
-                        return_all = FALSE)
+                        scale      = TRUE)
+res <- res$score
 ```
 
 ```{r}
-table(res$cohort)
-p1<- ggplot(res, aes(x= LIRA, fill= cohort)) +
+p1<- ggplot(res, aes(x= LIRA)) +
   geom_histogram(bins = 30, colour = "grey", alpha = 0.5)+
   design_mytheme(axis_angle = 0)+
   scale_fill_manual(values = palettes(palette = "jco", show_col = FALSE))
 ```
 
 
-```{r, fig.width=13, fig.height=7}
+```{r, fig.width=13, fig.height=7, message=FALSE, warning=FALSE}
 library(survminer)
-res<- res[res$cohort=="validation", ]
-# head(res)
-res<- best_cutoff(pdata = res, time = "os_time", status = "os_status", variable = "LIRA")
+res<- best_cutoff(pdata = res, time = "os_time", status = "os_status", variable = "LIRA", PrintResult = FALSE)
+
 # help("surv_group")
 p2<- surv_group(
   input_pdata     = res,
@@ -131,8 +129,8 @@ p2<- surv_group(
   levels          = c("High", "Low"),
   reference_group = "High",
   project         = "TCGA-LUAD",
-  time            = "time",
-  status          = "status",
+  time            = "os_time",
+  status          = "os_status",
   time_type       = "day",
   break_month     = "auto",
   cols            = NULL,
@@ -145,7 +143,7 @@ p1+p2
 
 
 ```{r, message=FALSE, results='hide',warning=FALSE, fig.show='hide'}
-tme<- calculate_sig_score(eset = eset_tpm, pdata = res, signature = signature_collection, method = "PCA")
+tme<- calculate_sig_score(eset = eset_tpm, pdata = res, signature = signature_collection, method = "PCA", adjust_eset = TRUE)
 # colnames(tme)
 p1<- sig_box(data = tme, signature = "CD_8_T_effector", variable = "LIRA_binary", palette = "jama")
 p2<- sig_box(data = tme, signature = "Nature_metabolism_Hypoxia", variable = "LIRA_binary", palette = "jama")
