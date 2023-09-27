@@ -44,7 +44,17 @@ lira_rnaseq_pipline <- function(pat_id, eset = NULL, data_type = "tpm", model = 
     print(eset[1:5, 1:5])
   }
 
-  ####################################
+
+
+  # data("colnames_eset", package = "rbatch")
+  #
+  # cols_index <- colnames_eset
+  # colnames_eset$ID
+
+  (load("E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/1-packages/colnames_eset.rda"))
+
+  colnames(eset)[2:ncol(eset)] <- colnames_eset
+  # ####################################
   res1 <- lira_model(eset        = eset,
                      check_eset  = TRUE,
                      scale       = TRUE,

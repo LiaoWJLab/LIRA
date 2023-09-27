@@ -35,9 +35,6 @@ get_lira_data <- function(id = "LIRA0001", data_type = c("tpm", "scale_tpm", "co
   print(dim(eset))
   ############################################
 
-  data("colnames_eset", package = "rbatch")
-  colnames(eset)[2:ncol(eset)] <- colnames_eset
-
   return(eset)
 }
 
