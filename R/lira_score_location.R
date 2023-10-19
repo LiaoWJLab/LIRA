@@ -120,14 +120,14 @@ lira_score_location<-function(score, pat_id, id_score = "ID", col_score = "risks
                   color = cols2[1],
                   size = 0.45)+
     annotate(geom = "text", fontface = "plain", color= cols2[1],
-             x = cutoff_all - 1.5, y= 15,hjust = 0,
+             x = cutoff_all - 1.5, y= 8,hjust = 0,
              label = paste0('BC of ', panel, ' = ', cutoff_all), size=4.5, angle = 60)+
 
 
     geom_vline(aes(xintercept = pat_score),
                linetype="dashed",color = "black", size = 0.55)+
     annotate(geom = "text", fontface = "plain", color= cols_pat,
-             x = pat_score - 1.5, y = 20, hjust = 0,
+             x = pat_score - 1.5, y = 10, hjust = 0,
              label = paste0( var, ' = ', pat_score), size= 5.5, angle = 60)
 
   if(showplot) print(p)

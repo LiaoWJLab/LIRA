@@ -2,13 +2,15 @@
 % Please edit documentation in R/get_lira_data.R
 \name{detect_miss}
 \alias{detect_miss}
-\title{Title}
+\title{Title Detect missing genes of signature gene list}
 \usage{
 detect_miss(eset, signature)
 }
 \arguments{
-\item{signature}{}
+\item{eset}{expression set}
+
+\item{signature}{a gene list}
 }
 \description{
-Title
+Title Detect missing genes of signature gene list
 }

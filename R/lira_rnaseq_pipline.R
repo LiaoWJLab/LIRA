@@ -18,7 +18,8 @@
 #' @export
 #'
 #' @examples
-lira_rnaseq_pipline <- function(pat_id, eset = NULL, data_type = "tpm", model = 1, palette = "nrc", path1 = NULL, path2 = NULL, data_path = "E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/0-data/"){
+lira_rnaseq_pipline <- function(pat_id, eset = NULL, data_type = "tpm", model = 1, palette = "nrc", path1 = NULL, path2 = NULL,
+                                data_path = "E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/0-data/"){
 
 
   if(is.null(path1)){
@@ -45,15 +46,34 @@ lira_rnaseq_pipline <- function(pat_id, eset = NULL, data_type = "tpm", model = 
   }
 
 
+  ####################################
+  message(">>>== Matching id...")
+
+  data("colnames_eset", package = "rbatch")
+  print(head(colnames_eset))
+
+  new_id <- data.frame("ID" = pat_id, "ID2" = pat_id, "ARM" = "IO")
+  colnames_eset <- rbind(colnames_eset, new_id)
+  colnames_eset <- colnames_eset[colnames_eset$ID2%in%colnames(eset), ]
+  eset <- eset[, colnames(eset)%in%colnames_eset$ID2]
+  #####################################
+
+  colnames_eset <- colnames_eset[order(colnames_eset$ID2), ]
+  eset <- eset[, order(colnames(eset))]
+
+  message(">>>== Matching result...")
+  print(data.frame(colnames_eset$ID2, colnames(eset))[1:20, ])
+  colnames(eset) <- colnames_eset$ID
+  ####################################
+  ####################################
 
   # data("colnames_eset", package = "rbatch")
   #
   # cols_index <- colnames_eset
   # colnames_eset$ID
 
-  (load("E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/1-packages/colnames_eset.rda"))
-
-  colnames(eset)[2:ncol(eset)] <- colnames_eset
+  # (load("E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/1-packages/colnames_eset.rda"))
+  # colnames(eset)[2:ncol(eset)] <- colnames_eset
   # ####################################
   res1 <- lira_model(eset        = eset,
                      check_eset  = TRUE,
@@ -73,7 +93,7 @@ lira_rnaseq_pipline <- function(pat_id, eset = NULL, data_type = "tpm", model = 
   pdata_op$BOR <- ifelse(pdata_op$BOR=="PR", "CRPR", pdata_op$BOR)
   # colnames(pdata_op)[2] <- "LIRA_OP"
   ###################################
-  score <- merge(score, pdata_op, by = "ID", all.x = T, all.y = TRUE)
+  score <- merge(score, pdata_op, by = "ID", all.x = TRUE, all.y = TRUE)
   score <- score[!is.na(score$LIRA), ]
 
   #' 需要设置新数据的关键变量，否则后续画图会报错

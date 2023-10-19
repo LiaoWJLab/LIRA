@@ -6,9 +6,9 @@
 
 #' Title
 #'
-#' @param id
-#' @param data_type
-#' @param path
+#' @param id LIRA0001
+#' @param data_type "tpm", "scale_tpm", "count"
+#' @param path  "E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/0-data/"
 #'
 #' @return
 #' @export
@@ -41,27 +41,55 @@ get_lira_data <- function(id = "LIRA0001", data_type = c("tpm", "scale_tpm", "co
 
 
 
-#' Title
+#' Title Detect missing genes of signature gene list
 #'
-#' @param eset
-#' @param signature
+#' @param eset expression set
+#' @param signature a gene list
 #'
 #' @return
 #' @export
 #'
 #' @examples
 detect_miss <- function(eset, signature){
-  freq1<-length(intersect(signature,rownames(eset)))/length(signature)
-  if(freq1<0.5){
-    msg1<- paste0(paste0(sprintf(">>>== Only %1.2f%%", 100*freq1)," of signature genes appear on gene matrix,\n interpret results with caution"))
-    warning(msg1)
-    message("Missing genes: ")
-    message(paste(signature[!signature%in%rownames(eset)], collapse  = ", "))
-  }else if(freq1>=0.5){
-    message(paste0(paste0(sprintf(">>>==  %1.2f%%", 100*freq1)," of signature genes appear on gene matrix")))
-    message("Missing genes: ")
-    message(paste(signature[!signature%in%rownames(eset)], collapse  = ", "))
+
+  if(class(signature)=="list"){
+
+    for (i in 1:length(signature)) {
+
+      sigs <- signature[i]
+      print(paste0(">>>== ", names(signature)[i]))
+
+      # print("")
+      freq1<-length(intersect(sigs, rownames(eset)))/length(sigs)
+      if(freq1<0.5){
+        msg1<- paste0(paste0(sprintf(">>>== Only %1.2f%%", 100*freq1)," of signature genes appear on gene matrix, interpret results with caution"))
+        print(paste0(msg1))
+        message("Missing genes: ")
+        message(paste0(sigs[!sigs%in%rownames(eset)], collapse  = ", "))
+
+      }else if(freq1>=0.5){
+        message(paste0(paste0(sprintf(">>>==  %1.2f%%", 100*freq1)," of signature genes appear on gene matrix")))
+        message("Missing genes: ")
+        message(paste0(sigs[!sigs%in%rownames(eset)], collapse  = ", "))
+      }
+    }
+
+  }else{
+    sigs <- signature
+    freq1<-length(intersect(sigs, rownames(eset)))/length(sigs)
+    if(freq1<0.5){
+      msg1<- paste0(paste0(sprintf(">>>== Only %1.2f%%", 100*freq1)," of signature genes appear on gene matrix, interpret results with caution"))
+      print(paste0(msg1))
+      message("Missing genes: ")
+      message(paste0(sigs[!sigs%in%rownames(eset)], collapse  = ", "))
+    }else if(freq1>=0.5){
+      message(paste0(paste0(sprintf(">>>==  %1.2f%%", 100*freq1)," of signature genes appear on gene matrix")))
+      message("Missing genes: ")
+      message(paste0(sigs[!sigs%in%rownames(eset)], collapse  = ", "))
+    }
   }
+
+
 }
 
 

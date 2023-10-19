@@ -11,7 +11,11 @@ get_lira_data(
 )
 }
 \arguments{
-\item{path}{}
+\item{id}{LIRA0001}
+
+\item{data_type}{"tpm", "scale_tpm", "count"}
+
+\item{path}{"E:/03-NSCLC/19-NSCLC-LIRA/4-analysis/0-data/"}
 }
 \description{
 Title
