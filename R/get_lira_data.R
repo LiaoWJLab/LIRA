@@ -106,7 +106,7 @@ detect_miss <- function(eset, signature){
 #' @examples
 get_pdata_op <- function(path = "E:/03-NSCLC/17-NSCLC-OP/3-data-analysis/1-model/7-final-model/best-model-type3-34639-pfs-0.001-ICN-good/4-riskscore-pdata.RData"){
 
-  (load("E:/03-NSCLC/17-NSCLC-OP/3-data-analysis/1-model/7-final-model/best-model-type3-34639-pfs-0.001-ICN-good/4-riskscore-pdata.RData"))
+  (load(path))
   colnames(pdata_score)[2] <- "lira_ref"
   pdata_score$BOR <- ifelse(pdata_score$BOR=="", "NE", pdata_score$BOR)
   pdata_score$ref_heatmap <- ifelse(pdata_score$ID%in%ref_pdata_heatmap$ID, "ref_heatmap", pdata_score$ID)

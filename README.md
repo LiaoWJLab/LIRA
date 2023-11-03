@@ -221,7 +221,7 @@ p + plot_annotation(tag_levels = 'A')
 ## References
 
 1.Zeng D, Fang Y, Chen G, …, Liao W; Construction of An Artificial
-Intelligence model for Predicting NSCLC immunotherapy Response： Results
+Intelligence model for Predicting NSCLC immunotherapy Response: Results
 from OAK, POPLAR and ORIENT-11 trials. (2023) *Under Review*.
 
 ## Reporting bugs

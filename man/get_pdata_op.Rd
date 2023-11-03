@@ -5,8 +5,8 @@
 \title{Title}
 \usage{
 get_pdata_op(
- 
-    path = "E:/03-NSCLC/17-NSCLC-OP/3-data-analysis/1-model/7-final-model/best-model-type3-34639-pfs-0.001-ICN-good/4-riskscore-pdata.RData"
+  path =
+    "E:/03-NSCLC/17-NSCLC-OP/3-data-analysis/1-model/7-final-model/best-model-type3-34639-pfs-0.001-ICN-good/4-riskscore-pdata.RData"
 )
 }
 \arguments{
