@@ -130,7 +130,7 @@ lira_model2<-function(eset, org = "hsa", pdata = NULL, id_pdata = "ID", scale = 
     res<- res$score
 
   }
-
-  if(scale) res$riskscore <- c(as.numeric(scale(res$riskscore, center = T)) + 2.5) * 10
+  print(head(res))
+  # if(scale) res$LIRA <- c(as.numeric(scale(res$LIRA, center = T)) + 2.5) * 10
   return(res)
 }
