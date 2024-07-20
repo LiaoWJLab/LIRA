@@ -2,7 +2,7 @@
 % Please edit documentation in R/lira_model2.R
 \name{lira_model2}
 \alias{lira_model2}
-\title{Title}
+\title{Process and Analyze Gene Expression Data with Reference Integration}
 \usage{
 lira_model2(
   eset,
@@ -20,10 +20,36 @@ lira_model2(
 )
 }
 \arguments{
-\item{org}{'hsa' or 'mus'}
+\item{eset}{Matrix or data structure convertible to matrix containing gene expression data.}
 
-\item{method}{}
+\item{org}{Organism code, default "hsa" for human; specify other codes as needed.}
+
+\item{pdata}{Optional dataframe with additional sample metadata.}
+
+\item{id_pdata}{Column name in `pdata` used as a unique identifier for samples, default is "ID".}
+
+\item{scale}{Logical, whether to scale gene expression data, default TRUE.}
+
+\item{plot}{Logical, whether to plot graphs for analysis, default FALSE.}
+
+\item{ref}{Logical, whether to use reference data for normalization, default TRUE.}
+
+\item{loop}{Logical, whether to process each sample individually (TRUE) or all samples collectively (FALSE).}
+
+\item{check_eset}{Logical, whether to check `eset` for proper format before processing, default TRUE.}
+
+\item{return_all}{Logical, whether to return results for all samples including references, default FALSE.}
+
+\item{remove_batch}{Logical, whether to perform batch effect correction, default FALSE.}
+
+\item{method}{Character, specifies the quantification metric for gene expression ("tpm" or "count"), default "tpm".}
+}
+\value{
+Dataframe of processed gene expression scores, with additional details if return_all is TRUE.
 }
 \description{
-Title
+This function processes gene expression datasets and optionally integrates a reference dataset
+for normalization or correction. It is flexible in handling individual samples or entire datasets,
+with options for batch effect correction and scaling. Suited for clinical and bioinformatics
+analyses requiring sophisticated data adjustments.
 }

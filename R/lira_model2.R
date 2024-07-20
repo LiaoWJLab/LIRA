@@ -1,21 +1,25 @@
 
-
-#' Title
+#' Process and Analyze Gene Expression Data with Reference Integration
 #'
-#' @param eset
-#' @param pdata
-#' @param id_pdata
-#' @param scale
-#' @param plot
-#' @param check_eset
-#' @param ref
-#' @param loop
-#' @param return_all
-#' @param org 'hsa' or 'mus'
-#' @param remove_batch
-#' @param method
+#' This function processes gene expression datasets and optionally integrates a reference dataset
+#' for normalization or correction. It is flexible in handling individual samples or entire datasets,
+#' with options for batch effect correction and scaling. Suited for clinical and bioinformatics
+#' analyses requiring sophisticated data adjustments.
 #'
-#' @return
+#' @param eset Matrix or data structure convertible to matrix containing gene expression data.
+#' @param org Organism code, default "hsa" for human; specify other codes as needed.
+#' @param pdata Optional dataframe with additional sample metadata.
+#' @param id_pdata Column name in `pdata` used as a unique identifier for samples, default is "ID".
+#' @param scale Logical, whether to scale gene expression data, default TRUE.
+#' @param plot Logical, whether to plot graphs for analysis, default FALSE.
+#' @param ref Logical, whether to use reference data for normalization, default TRUE.
+#' @param loop Logical, whether to process each sample individually (TRUE) or all samples collectively (FALSE).
+#' @param check_eset Logical, whether to check `eset` for proper format before processing, default TRUE.
+#' @param return_all Logical, whether to return results for all samples including references, default FALSE.
+#' @param remove_batch Logical, whether to perform batch effect correction, default FALSE.
+#' @param method Character, specifies the quantification metric for gene expression ("tpm" or "count"), default "tpm".
+#'
+#' @return Dataframe of processed gene expression scores, with additional details if return_all is TRUE.
 #' @export
 #'
 #' @examples
