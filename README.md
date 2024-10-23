@@ -189,9 +189,7 @@ p2<- surv_group(
   mini_sig        = "",
   save_path       = paste0("man/figures"))
 #> High  Low 
-#>  429   49 
-#> [1] High Low 
-#> Levels: High Low
+#>  429   49
 
 p1+p2
 ```
@@ -220,9 +218,9 @@ p + plot_annotation(tag_levels = 'A')
 
 ## References
 
-1.Zeng D, Fang Y, Chen G, …, Liao W; Construction of An Artificial
-Intelligence model for Predicting NSCLC immunotherapy Response: Results
-from OAK, POPLAR and ORIENT-11 trials. (2023) *Under Review*.
+1.Wang ZJ, Fang YR, …, Liao WJ, Zeng DQ; Predicting Immunotherapy
+Outcomes in NSCLC using RNA and pathology: Insights from OAK, POPLAR,
+and ORIENT-11 Trials. (2024).
 
 ## Reporting bugs
 
